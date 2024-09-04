@@ -1,21 +1,32 @@
 import { Link, useSearchParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
-import { Form, Input } from '@/components/ui/form';
+import {Form, Input, Select} from '@/components/ui/form';
 import { useLogin, loginInputSchema } from '@/lib/auth';
+import {useEffect, useState} from "react";
+import {Team} from "@/types/api";
+import {api} from "@/lib/api-client";
 
 type LoginFormProps = {
-  onSuccess: () => void;
+    onSuccess: () => void;
 };
-
 export const LoginForm = ({ onSuccess }: LoginFormProps) => {
-  const login = useLogin({
-    onSuccess,
-  });
+  const login = useLogin({ onSuccess });
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirectTo');
 
-  return (
+
+  const [teams, setTeams] = useState<Team[]>([]);
+
+
+  useEffect(() => {
+    api.get('/teams').then((response) => {
+      setTeams(response.data);
+    });
+  }, []);
+
+  // @ts-ignore
+    return (
     <div>
       <Form
         onSubmit={(values) => {
@@ -36,6 +47,15 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
               label="Password"
               error={formState.errors['password']}
               registration={register('password')}
+            />
+            <Select
+              label="Team"
+              error={formState.errors['teamId']} // Changed from teamId to teamIds
+              registration={register('teamId')} 
+              options={teams.map((team) => ({
+                label: team.name,
+                value: team.id,
+              }))}
             />
             <div>
               <Button

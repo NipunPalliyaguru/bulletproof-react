@@ -22,13 +22,14 @@ export type User = Entity<{
   lastName: string;
   email: string;
   role: 'ADMIN' | 'USER';
-  teamId: string;
+  teamIds: string[]; // Changed from teamId to teamIds
   bio: string;
 }>;
 
 export type AuthResponse = {
   jwt: string;
   user: User;
+  teams: Team[]; // Added teams to the auth response;
 };
 
 export type Team = Entity<{

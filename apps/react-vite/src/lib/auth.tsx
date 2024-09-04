@@ -22,6 +22,7 @@ const logout = (): Promise<void> => {
 export const loginInputSchema = z.object({
   email: z.string().min(1, 'Required').email('Invalid email'),
   password: z.string().min(5, 'Required'),
+  teamId: z.string().min(1, 'Required'), // teamId is required for login
 });
 
 export type LoginInput = z.infer<typeof loginInputSchema>;
